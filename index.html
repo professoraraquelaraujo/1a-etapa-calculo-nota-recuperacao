@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -36,17 +35,30 @@
 </head>
 <body>
     <h2>Cálculo da Nota de Recuperação</h2>
-    <label for="notaProva1">Nota da Prova 1 (máx 12):</label>
-    <input type="number" id="notaProva1" step="0.1" max="12" min="0">
 
-    <label for="notaProva2">Nota da Prova 2 (máx 12):</label>
-    <input type="number" id="notaProva2" step="0.1" max="12" min="0">
+    <label for="valorProva1">Valor da Prova 1:</label>
+    <input type="number" id="valorProva1" step="0.1" min="0">
 
-    <label for="notaAtividade">Nota da Atividade Avaliativa (máx 6):</label>
-    <input type="number" id="notaAtividade" step="0.1" max="6" min="0">
+    <label for="notaProva1">Nota da Prova 1:</label>
+    <input type="number" id="notaProva1" step="0.1" min="0">
 
-    <label for="notaRecuperacao">Nota da Recuperação (máx 30):</label>
-    <input type="number" id="notaRecuperacao" step="0.1" max="30" min="0">
+    <label for="valorProva2">Valor da Prova 2:</label>
+    <input type="number" id="valorProva2" step="0.1" min="0">
+
+    <label for="notaProva2">Nota da Prova 2:</label>
+    <input type="number" id="notaProva2" step="0.1" min="0">
+
+    <label for="valorAtividade">Valor da Atividade Avaliativa:</label>
+    <input type="number" id="valorAtividade" step="0.1" min="0">
+
+    <label for="notaAtividade">Nota da Atividade Avaliativa:</label>
+    <input type="number" id="notaAtividade" step="0.1" min="0">
+
+    <label for="valorRecuperacao">Valor da Recuperação:</label>
+    <input type="number" id="valorRecuperacao" step="0.1" min="0">
+
+    <label for="notaRecuperacao">Nota da Recuperação:</label>
+    <input type="number" id="notaRecuperacao" step="0.1" min="0">
 
     <button onclick="calcularNotaFinal()">Calcular Nota Final</button>
 
@@ -54,21 +66,34 @@
 
     <script>
         function calcularNotaFinal() {
+            const valorProva1 = parseFloat(document.getElementById("valorProva1").value) || 0;
+            const valorProva2 = parseFloat(document.getElementById("valorProva2").value) || 0;
+            const valorAtividade = parseFloat(document.getElementById("valorAtividade").value) || 0;
+            const valorRecuperacao = parseFloat(document.getElementById("valorRecuperacao").value) || 0;
+
             const notaProva1 = parseFloat(document.getElementById("notaProva1").value) || 0;
             const notaProva2 = parseFloat(document.getElementById("notaProva2").value) || 0;
             const notaAtividade = parseFloat(document.getElementById("notaAtividade").value) || 0;
             const notaRecuperacao = parseFloat(document.getElementById("notaRecuperacao").value) || 0;
 
-            const notaRecuperacaoConvertida = (notaRecuperacao / 30) * 12;
+            // Convertendo a nota de recuperação para o valor proporcional da prova
+            const notaRecuperacaoConvertida = (notaRecuperacao / valorRecuperacao) * Math.max(valorProva1, valorProva2);
 
-            // Substituir a menor nota entre as duas provas pela nota de recuperação convertida, se for maior
-            const novaNotaProva1 = Math.max(notaProva1, notaRecuperacaoConvertida);
-            const novaNotaProva2 = Math.max(notaProva2, notaRecuperacaoConvertida);
+            // Substituir a menor nota entre as duas provas pela nota de recuperação convertida, se a recuperação for maior
+            let novaNotaProva1 = notaProva1;
+            let novaNotaProva2 = notaProva2;
 
-            // Calcular a nota final
+            if (notaRecuperacaoConvertida > notaProva1 && notaProva1 <= notaProva2) {
+                novaNotaProva1 = notaRecuperacaoConvertida;
+            } else if (notaRecuperacaoConvertida > notaProva2 && notaProva2 < notaProva1) {
+                novaNotaProva2 = notaRecuperacaoConvertida;
+            }
+
+            // Calcular a nota final somando as notas das provas e da atividade
             const notaFinal = notaAtividade + novaNotaProva1 + novaNotaProva2;
 
-            document.getElementById("resultado").innerHTML = `Sua nota final é: ${notaFinal.toFixed(2)} / 30`;
+            // Exibir a nota final
+            document.getElementById("resultado").innerHTML = `Sua nota final é: ${notaFinal.toFixed(2)} / ${(valorProva1 + valorProva2 + valorAtividade).toFixed(2)}`;
         }
     </script>
 </body>
